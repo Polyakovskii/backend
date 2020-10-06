@@ -3,6 +3,7 @@ All main Serializers
 """
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from trading_app.models import Currency
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,3 +40,12 @@ class ListUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'first_name', 'last_name',)
+
+
+class CurrencySerializer(serializers.ModelSerializer):
+    """
+    Serializer for Currency
+    """
+    class Meta:
+        model = Currency
+        fields = "__all__"

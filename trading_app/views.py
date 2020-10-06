@@ -1,7 +1,13 @@
 from rest_framework import viewsets, permissions
 from django.contrib.auth.models import User
-from trading_app.serializers import UserSerializer, ListUserSerializer, UpdateUserSerializer
+from trading_app.serializers import (
+    UserSerializer,
+    ListUserSerializer,
+    UpdateUserSerializer,
+    CurrencySerializer
+)
 from trading_app.permissions import IsOwner
+from trading_app.models import Currency
 # Create your views here.
 
 
@@ -33,3 +39,9 @@ class UserView(
         if self.action == 'update':
             return [IsOwner()]
         return [permissions.IsAuthenticated()]
+
+
+class CurrencyView(viewsets.GenericViewSet, viewsets.mixins.ListModelMixin):
+
+    queryset = Currency.objects.all()
+    serializer_class = CurrencySerializer
