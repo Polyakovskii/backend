@@ -8,9 +8,9 @@ TransactionType = {
     "sale": 2
 }
 OrderType = {
-    "market":1,
-    "limit":2,
-    "stop-loss":3
+    "market": 1,
+    "limit": 2,
+    "stop-loss": 3
 }
 
 
@@ -39,12 +39,12 @@ class Item(models.Model):
 
 class WatchList(models.Model):
 
-     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
-     item = models.ForeignKey(Item, blank=True, null=True, on_delete=models.SET_NULL)
+    item = models.ForeignKey(Item, blank=True, null=True, on_delete=models.SET_NULL)
 
-     class Meta:
-         unique_together = ('user', 'item')
+    class Meta:
+        unique_together = ('user', 'item')
 
 
 class Price(models.Model):
