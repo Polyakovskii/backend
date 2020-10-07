@@ -4,10 +4,12 @@ from trading_app.serializers import (
     UserSerializer,
     ListUserSerializer,
     UpdateUserSerializer,
-    CurrencySerializer
+    CurrencySerializer,
+    WatchListSerializer,
+    CreateWatchListSerializer
 )
 from trading_app.permissions import IsOwner
-from trading_app.models import Currency
+from trading_app.models import Currency, WatchList
 # Create your views here.
 
 
@@ -42,6 +44,33 @@ class UserView(
 
 
 class CurrencyView(viewsets.GenericViewSet, viewsets.mixins.ListModelMixin):
-
+    """
+    CurrencyView
+    """
     queryset = Currency.objects.all()
     serializer_class = CurrencySerializer
+
+
+class WatchListView(
+    viewsets.GenericViewSet,
+    viewsets.mixins.CreateModelMixin,
+    viewsets.mixins.ListModelMixin,
+    viewsets.mixins.RetrieveModelMixin,
+    viewsets.mixins.DestroyModelMixin
+):
+    """
+    WatchList View
+    """
+    default_serializer_class = WatchListSerializer
+    serializer_classes = {
+        'list': WatchListSerializer,
+        'retrieve': WatchListSerializer,
+        'create': CreateWatchListSerializer
+    }
+    lookup_field = "item"
+
+    def get_serializer_class(self):
+        return self.serializer_classes.get(self.action, self.default_serializer_class)
+
+    def get_queryset(self):
+        return WatchList.objects.filter(user=self.request.user)
