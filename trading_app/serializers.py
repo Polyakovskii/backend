@@ -3,7 +3,7 @@ All main Serializers
 """
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from trading_app.models import Currency, Item, WatchList
+from trading_app.models import Currency, Item, WatchList, Inventory
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -88,3 +88,14 @@ class CreateWatchListSerializer(serializers.ModelSerializer):
         watchlist = WatchList(user=user, **validated_data)
         watchlist.save()
         return watchlist
+
+
+class InventorySerializer(serializers.ModelSerializer):
+    """
+    Inventory serializer
+    """
+    item = ItemSerializer()
+
+    class Meta:
+        model = Inventory
+        fields = "__all__"

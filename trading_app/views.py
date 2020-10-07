@@ -6,10 +6,11 @@ from trading_app.serializers import (
     UpdateUserSerializer,
     CurrencySerializer,
     WatchListSerializer,
-    CreateWatchListSerializer
+    CreateWatchListSerializer,
+    InventorySerializer
 )
 from trading_app.permissions import IsOwner
-from trading_app.models import Currency, WatchList
+from trading_app.models import Currency, WatchList, Inventory
 # Create your views here.
 
 
@@ -74,3 +75,16 @@ class WatchListView(
 
     def get_queryset(self):
         return WatchList.objects.filter(user=self.request.user)
+
+
+class InventoryView(
+    viewsets.GenericViewSet,
+    viewsets.mixins.ListModelMixin
+):
+    """
+    Inventory view
+    """
+    serializer_class = InventorySerializer
+
+    def get_queryset(self):
+        return Inventory.objects.filter(user=self.request.user)
