@@ -4,7 +4,7 @@ All main Serializers
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
-from trading_app.models import Currency, Item, WatchList, Inventory, Offer
+from trading_app.models import Currency, Item, WatchList, Inventory, Offer, Trade
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -136,3 +136,16 @@ class CreateOfferSerializer(serializers.ModelSerializer):
         offer = Offer(**validated_data)
         offer.save()
         return offer
+
+
+class TradeSerializer(serializers.ModelSerializer):
+
+    item = ItemSerializer()
+    seller = ListUserSerializer()
+    seller_offer = OfferSerializer()
+    buyer = ListUserSerializer()
+    buyer_offer = OfferSerializer()
+
+    class Meta:
+        model = Trade
+        fields = "__all__"

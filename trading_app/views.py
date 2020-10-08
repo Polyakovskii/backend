@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions
 from django.contrib.auth.models import User
+from django.db.models import Q
 from trading_app.serializers import (
     UserSerializer,
     ListUserSerializer,
@@ -9,10 +10,11 @@ from trading_app.serializers import (
     CreateWatchListSerializer,
     InventorySerializer,
     OfferSerializer,
-    CreateOfferSerializer
+    CreateOfferSerializer,
+    TradeSerializer
 )
 from trading_app.permissions import IsOwner
-from trading_app.models import Currency, WatchList, Inventory, Offer
+from trading_app.models import Currency, WatchList, Inventory, Offer, Trade
 # Create your views here.
 
 
@@ -109,3 +111,16 @@ class OfferView(
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
+
+
+class TradeView(
+    viewsets.GenericViewSet,
+    viewsets.mixins.ListModelMixin
+):
+    """
+    Trade View
+    """
+    serializer_class = TradeSerializer
+
+    def get_queryset(self):
+        return Trade.objects.filter(Q(buyer=self.request.user) | Q(seller=self.request.user))
