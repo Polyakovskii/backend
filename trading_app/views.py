@@ -7,10 +7,12 @@ from trading_app.serializers import (
     CurrencySerializer,
     WatchListSerializer,
     CreateWatchListSerializer,
-    InventorySerializer
+    InventorySerializer,
+    OfferSerializer,
+    CreateOfferSerializer
 )
 from trading_app.permissions import IsOwner
-from trading_app.models import Currency, WatchList, Inventory
+from trading_app.models import Currency, WatchList, Inventory, Offer
 # Create your views here.
 
 
@@ -88,3 +90,22 @@ class InventoryView(
 
     def get_queryset(self):
         return Inventory.objects.filter(user=self.request.user)
+
+
+class OfferView(
+    viewsets.GenericViewSet,
+    viewsets.mixins.ListModelMixin,
+    viewsets.mixins.CreateModelMixin
+):
+    """
+    Offer view
+    """
+    default_serializer_class = OfferSerializer
+    serializer_classes = {
+        'list': OfferSerializer,
+        'create': CreateOfferSerializer
+    }
+    queryset = Offer.objects.all()
+
+    def get_serializer_class(self):
+        return self.serializer_classes.get(self.action, self.default_serializer_class)

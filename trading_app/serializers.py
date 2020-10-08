@@ -3,7 +3,8 @@ All main Serializers
 """
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from trading_app.models import Currency, Item, WatchList, Inventory
+from django.db.models import ObjectDoesNotExist
+from trading_app.models import Currency, Item, WatchList, Inventory, Offer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -99,3 +100,39 @@ class InventorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = "__all__"
+
+
+class OfferSerializer(serializers.ModelSerializer):
+    """
+    Default offer serializer
+    """
+    item = ItemSerializer()
+    user = ListUserSerializer()
+
+    class Meta:
+        model = Offer
+        fields = "__all__"
+
+
+class CreateOfferSerializer(serializers.ModelSerializer):
+    """
+    Serializer for offer creation
+    """
+    class Meta:
+        model = Offer
+        fields = ('item', 'entry_quantity', 'order_type', 'transaction_type', 'price')
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        if validated_data['transaction_type'] == 2:
+            try:
+                item = user.inventory_set.get(item=validated_data['item'])
+                if item.quantity < validated_data['entry_quantity']:
+                    raise serializers.ValidationError("You don't have enough items of that type in your inventory")
+            except ObjectDoesNotExist:
+                raise serializers.ValidationError("You don't have enough items of that type in your inventory")
+        validated_data['user'] = user
+        validated_data['quantity'] = validated_data['entry_quantity']
+        offer = Offer(**validated_data)
+        offer.save()
+        return offer

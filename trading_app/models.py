@@ -4,13 +4,13 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 TransactionType = {
-    "purchase": 1,
-    "sale": 2
+    1: "purchase",
+    2: "sale"
 }
 OrderType = {
-    "market": 1,
-    "limit": 2,
-    "stop-loss": 3
+    1: "market",
+    2: "limit",
+    3: "stop-loss"
 }
 
 
