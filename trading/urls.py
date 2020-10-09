@@ -20,7 +20,7 @@ from trading_app.router import router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token/', obtain_jwt_token),
+    path('api/token/', obtain_jwt_token, name='get-token'),
     path('api/token/verify/', verify_jwt_token),
     path('api/token/refresh/', refresh_jwt_token),
     path('api/v1/', include(router.urls)),
