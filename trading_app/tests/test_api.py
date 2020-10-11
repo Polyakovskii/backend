@@ -58,3 +58,13 @@ def test_user_update(api_client, create_user):
     assert response.status_code == 200
     assert response.json()['username'] == kwargs['username']
 
+
+@pytest.mark.django_db
+def test_currency_list(create_currency, authorized_client):
+    url = '/api/v1/currencies/'
+    currency = create_currency()
+    print(currency.pk)
+    response = authorized_client.get(url)
+    print(response.content)
+    assert response.status_code == 200
+    assert response.json()[currency.pk-1]['code'] == currency.code

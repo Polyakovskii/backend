@@ -1,6 +1,7 @@
 import uuid
 import pytest
 from django.urls import reverse
+from trading_app.models import Currency
 from trading_app.models import Item
 
 @pytest.fixture
@@ -32,3 +33,13 @@ def authorized_client(create_user, api_client, test_password):
     api_client.force_authenticate(user=user, token=token)
     return api_client
 
+
+@pytest.fixture
+def create_currency():
+    def make_currency(**kwargs):
+        if 'code' not in kwargs:
+            kwargs['code'] = 'AAPL'
+        if 'name' not in kwargs:
+            kwargs['name'] = 'Apple'
+        return Currency.objects.create(**kwargs)
+    return make_currency
