@@ -70,7 +70,7 @@ def test_currency_list(create_currency, authorized_client):
     assert response.json()[currency.pk-1]['code'] == currency.code
 
 
-#tests for watchlist
+# tests for watchlist
 @pytest.mark.django_db
 def test_watchlist_list(api_client, create_watchlist):
     url = '/api/v1/watchlist/'
@@ -97,9 +97,20 @@ def test_watchlist_create(authorized_client, create_item):
     print(response.content)
     assert response.status_code == 201
 
+@pytest.mark.django_db
 def test_watchlist_delete(api_client, create_watchlist):
     watchlist = create_watchlist
     url = f'/api/v1/watchlist/{watchlist.item.id}/'
     api_client.force_authenticate(user=watchlist.user)
     response = api_client.delete(url)
     assert response.status_code == 204
+
+
+# inventory tests
+@pytest.mark.django_db
+def test_inventory_list(api_client, create_inventory):
+    inventory = create_inventory()
+    url = '/api/v1/inventory/'
+    api_client.force_authenticate(user=inventory.user)
+    response = api_client.get(url)
+    assert response.status_code == 200
