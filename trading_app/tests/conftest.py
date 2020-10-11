@@ -1,8 +1,7 @@
 import uuid
 import pytest
 from django.urls import reverse
-from trading_app.models import Currency
-from trading_app.models import Item
+from trading_app.models import Currency, Item, WatchList
 
 @pytest.fixture
 def api_client():
@@ -38,8 +37,28 @@ def authorized_client(create_user, api_client, test_password):
 def create_currency():
     def make_currency(**kwargs):
         if 'code' not in kwargs:
-            kwargs['code'] = 'AAPL'
+            kwargs['code'] = 'EUR'
         if 'name' not in kwargs:
-            kwargs['name'] = 'Apple'
+            kwargs['name'] = 'Euro'
         return Currency.objects.create(**kwargs)
     return make_currency
+
+
+@pytest.fixture
+def create_item(create_currency):
+    def make_item(**kwargs):
+        item = Item.objects.create(
+            code=kwargs.get('code', 'AAPL'),
+            name=kwargs.get('name', 'Apple'),
+            logo=kwargs.get('logo', 'www.src.com'),
+            actual_price=kwargs.get('actual_price', 10),
+            currency=kwargs.get('currency', create_currency()),
+        )
+        return item
+    return make_item
+
+
+@pytest.fixture
+def create_watchlist(create_item, create_user):
+    watchlist = WatchList.objects.create(user=create_user(), item=create_item())
+    return watchlist
