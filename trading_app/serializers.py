@@ -132,10 +132,14 @@ class CreateOfferSerializer(serializers.ModelSerializer):
         if validated_data['transaction_type'] == 2:
             try:
                 item = user.inventory_set.get(item=validated_data['item'])
-                if item.quantity < validated_data['entry_quantity']:
-                    raise serializers.ValidationError("You don't have enough items of that type in your inventory")
+                if item.quantity - item.reserved_quantity < validated_data['entry_quantity']:
+                    raise serializers.ValidationError(
+                        "You don't have enough not reserved items of that type in your inventory"
+                    )
             except ObjectDoesNotExist:
-                raise serializers.ValidationError("You don't have enough items of that type in your inventory")
+                raise serializers.ValidationError("You don't have items of that type in your inventory")
+            item.reserved_quantity += validated_data['entry_quantity']
+            item.save()
         validated_data['user'] = user
         validated_data['quantity'] = validated_data['entry_quantity']
         offer = Offer(**validated_data)
