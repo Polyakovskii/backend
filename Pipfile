@@ -13,6 +13,7 @@ djangorestframework-jwt = "*"
 pytest-django = "*"
 pytest = "*"
 celery = "*"
+redis = "*"
 
 [requires]
 python_version = "3.8"
