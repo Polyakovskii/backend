@@ -122,6 +122,11 @@ class CreateOfferSerializer(serializers.ModelSerializer):
         model = Offer
         fields = ('item', 'entry_quantity', 'order_type', 'transaction_type', 'price')
 
+    def validate(self, attrs):
+        if attrs['entry_quantity'] <= 0:
+            raise serializers.ValidationError("Quantity should be positive number")
+        return attrs
+
     def create(self, validated_data):
         user = self.context['request'].user
         if validated_data['transaction_type'] == 2:
