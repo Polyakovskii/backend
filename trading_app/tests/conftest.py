@@ -1,7 +1,7 @@
 import uuid
 import pytest
 from django.urls import reverse
-from trading_app.models import Currency, Item, WatchList, Inventory
+from trading_app.models import Currency, Item, WatchList, Inventory, Offer
 
 @pytest.fixture
 def api_client():
@@ -66,12 +66,12 @@ def create_watchlist(create_item, create_user):
 
 @pytest.fixture
 def create_inventory(create_item, create_user):
-    def make_inventory():
+    def make_inventory(**kwargs):
         inventory = Inventory.objects.create(
             item=create_item(),
             user=create_user(),
-            quantity=10,
-            reserved_quantity=7
+            quantity=kwargs.get('quantity', 10),
+            reserved_quantity=kwargs.get('reserved_quantity', 8)
         )
         return inventory
     return make_inventory

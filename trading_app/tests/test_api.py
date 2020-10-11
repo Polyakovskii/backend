@@ -58,7 +58,7 @@ def test_user_update(api_client, create_user):
     assert response.status_code == 200
     assert response.json()['username'] == kwargs['username']
 
-#tests for currency
+# tests for currency
 @pytest.mark.django_db
 def test_currency_list(create_currency, authorized_client):
     url = '/api/v1/currencies/'
@@ -97,6 +97,7 @@ def test_watchlist_create(authorized_client, create_item):
     print(response.content)
     assert response.status_code == 201
 
+
 @pytest.mark.django_db
 def test_watchlist_delete(api_client, create_watchlist):
     watchlist = create_watchlist
@@ -114,3 +115,45 @@ def test_inventory_list(api_client, create_inventory):
     api_client.force_authenticate(user=inventory.user)
     response = api_client.get(url)
     assert response.status_code == 200
+
+
+# offer tests
+@pytest.mark.django_db
+def test_offer_list(authorized_client):
+    url = '/api/v1/offers/'
+    response = authorized_client.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ["quantity", "entry_quantity", "order_type", "transaction_type", "expected"],
+    [
+        (10, 7, 1, 1, 201),
+        (7, 10, 1, 2, 400),
+        (10, 0, 1, 1, 400),
+        (10, 7, 4, 2, 400),
+        (10, 7, 1, 4, 400),
+    ]
+)
+def test_offer_creation(
+        api_client,
+        create_inventory,
+        quantity,
+        entry_quantity,
+        order_type,
+        transaction_type,
+        expected
+):
+    url = '/api/v1/offers/'
+    inventory = create_inventory(quantity=quantity)
+    api_client.force_authenticate(user=inventory.user)
+    data = {
+        'item': inventory.item.id,
+        'entry_quantity': entry_quantity,
+        'order_type': order_type,
+        'transaction_type': transaction_type,
+        'price': 10,
+    }
+    response = api_client.post(url, data)
+    assert response.status_code == expected
