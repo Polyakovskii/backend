@@ -27,12 +27,25 @@ def test_user_retrieve(api_client, create_user):
 
 
 @pytest.mark.django_db
-def test_creating_user(api_client, ):
+@pytest.mark.parametrize(
+    ["user_name", "first_name", "second_name", "password", "expected"],
+    [
+        ("name", "n", "f", "1234", 201),
+        ("", "", "", "1234", 400),
+        ("", "", "", "", 400),
+        ("123", "34", "3453", "", 400),
+    ]
+)
+def test_creating_user(api_client, user_name, first_name, second_name, password, expected):
     url = f'/api/v1/users/'
-    kwargs = {'username': 'name', 'first_name': 'n', 'second_name': 'n', 'password': 'qwerty', }
+    kwargs = {
+        'username': user_name,
+        'first_name': first_name,
+        'second_name': second_name,
+        'password': password,
+    }
     response = api_client.post(url, kwargs, format='json')
-    assert response.status_code == 201
-    assert response.json()['username'] == kwargs['username']
+    assert response.status_code == expected
 
 
 @pytest.mark.django_db
