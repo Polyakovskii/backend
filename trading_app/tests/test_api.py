@@ -49,14 +49,28 @@ def test_creating_user(api_client, user_name, first_name, second_name, password,
 
 
 @pytest.mark.django_db
-def test_user_update(api_client, create_user):
+@pytest.mark.parametrize(
+    ["user_name", "first_name", "second_name", "password", "expected"],
+    [
+        ("name", "n", "f", "1234", 200),
+        ("", "", "", "1234", 400),
+        ("", "", "", "", 400),
+        ("123", "34", "3453", "", 200),
+    ]
+)
+def test_user_update(api_client, create_user, user_name, first_name, second_name, password, expected):
     user = create_user()
     url = f'/api/v1/users/{user.pk}/'
     api_client.force_authenticate(user=user, )
-    kwargs = {'username': 'name', 'first_name': 'n', 'second_name': 'n', 'password': 'qwerty', }
+    kwargs = {
+        'username': user_name,
+        'first_name': first_name,
+        'second_name': second_name,
+        'password': password,
+    }
     response = api_client.put(url, kwargs, follow=True, )
-    assert response.status_code == 200
-    assert response.json()['username'] == kwargs['username']
+    assert response.status_code == expected
+
 
 # tests for currency
 @pytest.mark.django_db
