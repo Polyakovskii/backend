@@ -1,4 +1,4 @@
-from django.db.models import ObjectDoesNotExist
+from django.db.models import ObjectDoesNotExist, Q
 from trading_app.models import Trade, Offer, Inventory
 from celery import shared_task
 
@@ -8,7 +8,7 @@ def make_trade(buyer_offer: Offer, seller_offer: Offer):
         quantity = seller_offer.quantity
     else:
         quantity = buyer_offer.quantity
-    Trade.objects.create(
+    trade = Trade.objects.create(
         item=buyer_offer.item,
         seller=seller_offer.user,
         buyer=buyer_offer.user,
@@ -18,6 +18,7 @@ def make_trade(buyer_offer: Offer, seller_offer: Offer):
         seller_offer=seller_offer,
         buyer_offer=buyer_offer,
     )
+    trade.save()
     buyer_offer.quantity -= quantity
     if buyer_offer.quantity == 0:
         buyer_offer.is_active = False
@@ -33,7 +34,7 @@ def make_trade(buyer_offer: Offer, seller_offer: Offer):
             item=buyer_offer.item,
             user=buyer_offer.user,
             quantity=0,
-            reserved_quantity=0
+            reserved_quantity=0,
         )
     buyer_inventory.quantity += quantity
     buyer_inventory.save()
@@ -49,12 +50,13 @@ def make_trade(buyer_offer: Offer, seller_offer: Offer):
 
 @shared_task
 def find_trades():
-    buy_offers = Offer.objects.filter(transaction_type=1)
+    buy_offers = Offer.objects.filter(transaction_type=1, is_active=True)
     for buyer_offer in buy_offers:
         sell_offers = Offer.objects.filter(
             transaction_type=2,
             price__lte=buyer_offer.price,
-            item=buyer_offer.item
-        ).order_by('-price')
+            item=buyer_offer.item,
+            is_active=True,
+        ).order_by('-price').exclude(user=buyer_offer.user)
         if sell_offers.exists():
             make_trade(buyer_offer=buyer_offer, seller_offer=sell_offers[0])

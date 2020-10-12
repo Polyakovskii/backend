@@ -29,7 +29,7 @@ services:
     container_name: 'redis'
   celery:
     build: .
-    command: celery -A trading worker -l info
+    command: celery -A trading worker -B
     env_file:
       - web-variables.env
     depends_on:

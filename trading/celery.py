@@ -1,7 +1,8 @@
-import os
+import os, sys
 from celery import Celery
-from celery.schedules import crontab
-import trading_app.tasks
+import trading.settings
+
+sys.path.append(os.path.abspath('trading'))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'trading.settings')
 celery_app = Celery('trading')
