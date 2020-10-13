@@ -122,7 +122,7 @@ class Trade(models.Model):
 
 class Inventory(models.Model):
 
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, related_name='inventory')
 
     item = models.ForeignKey(Item, blank=True, null=True, on_delete=models.SET_NULL)
 
