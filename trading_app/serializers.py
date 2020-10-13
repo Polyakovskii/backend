@@ -130,7 +130,7 @@ class CreateOfferSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
-        if validated_data['transaction_type'] == TransactionTypeEnum.sale.value():
+        if validated_data['transaction_type'] == TransactionTypeEnum.sale.value:
             try:
                 item = user.inventory.get(item=validated_data['item'])
                 if item.quantity - item.reserved_quantity < validated_data['entry_quantity']:

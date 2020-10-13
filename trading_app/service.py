@@ -31,7 +31,7 @@ def make_trade(buyer_offer: Offer, seller_offer: Offer):
     if seller_offer.quantity == 0:
         seller_offer.is_active = False
     seller_offer.save(update_fields=('is_active', 'quantity'))
-    buyer_inventory = buyer_offer.user.inventory.get_or_create(
+    buyer_inventory, _ = buyer_offer.user.inventory.get_or_create(
         item=buyer_offer.item,
         defaults={
             'quantity': 0,

@@ -8,5 +8,3 @@ RUN pipenv install --system
 
 # Copy project
 COPY . /code/
-
-ENTRYPOINT ["/code/docker-entrypoint.sh"]
