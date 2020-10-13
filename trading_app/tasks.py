@@ -1,6 +1,6 @@
 from celery import shared_task
 from trading_app.models import Offer
-from trading_app.service import make_trade
+from trading_app.service import make_trade, TransactionTypeEnum
 
 
 @shared_task
@@ -8,10 +8,10 @@ def find_trades():
     buy_offers = Offer.objects.select_related(
         'user',
         'item'
-    ).filter(transaction_type=1, is_active=True)
+    ).filter(transaction_type=TransactionTypeEnum.purchase.value(), is_active=True)
     for buyer_offer in buy_offers:
         sell_offers = Offer.objects.select_related('user', 'item').filter(
-            transaction_type=2,
+            transaction_type=TransactionTypeEnum.sale.value(),
             price__lte=buyer_offer.price,
             item=buyer_offer.item,
             is_active=True,

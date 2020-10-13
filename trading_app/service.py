@@ -1,5 +1,11 @@
+import enum
 from django.shortcuts import get_object_or_404
 from trading_app.models import Trade, Offer, Inventory
+
+
+class TransactionTypeEnum(enum.IntEnum):
+    purchase = 1
+    sale = 2
 
 
 def make_trade(buyer_offer: Offer, seller_offer: Offer):
