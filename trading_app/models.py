@@ -21,6 +21,9 @@ class Currency(models.Model):
 
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Item(models.Model):
 
@@ -36,6 +39,9 @@ class Item(models.Model):
 
     details = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class WatchList(models.Model):
 
@@ -45,6 +51,9 @@ class WatchList(models.Model):
 
     class Meta:
         unique_together = ('user', 'item')
+
+    def __str__(self):
+        return f"{self.user}'s {self.item}"
 
 
 class Price(models.Model):
@@ -73,6 +82,9 @@ class Offer(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Offer. User: {self.user} Item: {self.item}"
 
 
 class Trade(models.Model):
@@ -119,6 +131,9 @@ class Trade(models.Model):
         related_query_name='offer_trade',
     )
 
+    def __str__(self):
+        return f"Trade. Buyer:{self.buyer}, seller: {self.seller}, item: {self.item}"
+
 
 class Inventory(models.Model):
 
@@ -132,3 +147,6 @@ class Inventory(models.Model):
     class Meta:
         db_table = 'inventory'
         unique_together = ('user', 'item')
+
+    def __str__(self):
+        return f"Item. {self.user}'s {self.item}"
