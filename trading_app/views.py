@@ -102,7 +102,9 @@ class OfferView(
         'list': OfferSerializer,
         'create': CreateOfferSerializer
     }
-    queryset = Offer.objects.all()
+
+    def get_queryset(self):
+        return Offer.objects.filter(is_active=True)
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
