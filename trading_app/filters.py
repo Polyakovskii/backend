@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from trading_app.models import Offer, Trade
+from trading_app.models import Offer, Trade, Inventory
 
 
 TransactionType = (
@@ -51,3 +51,12 @@ class TradeFilter(filters.FilterSet):
             'min_unit_price',
             'max_unit_price'
         )
+
+
+class InventoryFilter(filters.FilterSet):
+    min_quantity = filters.NumberFilter(field_name='quantity', lookup_expr='gte')
+    max_quantity = filters.NumberFilter(field_name='quantity', lookup_expr='lte')
+
+    class Meta:
+        model = Inventory
+        fields = ('item', 'min_quantity', 'max_quantity', )

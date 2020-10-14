@@ -16,7 +16,7 @@ from trading_app.serializers import (
 )
 from trading_app.permissions import IsOwnerOrAuthenticatedReadOnly
 from trading_app.models import Currency, WatchList, Inventory, Offer, Trade
-from trading_app.filters import OfferFilter, TradeFilter
+from trading_app.filters import OfferFilter, TradeFilter, InventoryFilter
 # Create your views here.
 
 
@@ -86,6 +86,9 @@ class InventoryView(
     Inventory view
     """
     serializer_class = InventorySerializer
+
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = InventoryFilter
 
     def get_queryset(self):
         return Inventory.objects.filter(user=self.request.user)
