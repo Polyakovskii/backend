@@ -1,6 +1,7 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django_filters import rest_framework as filters
 from trading_app.serializers import (
     UserSerializer,
     ListUserSerializer,
@@ -15,6 +16,7 @@ from trading_app.serializers import (
 )
 from trading_app.permissions import IsOwnerOrAuthenticatedReadOnly
 from trading_app.models import Currency, WatchList, Inventory, Offer, Trade
+from trading_app.filters import OfferFilter, TradeFilter, InventoryFilter
 # Create your views here.
 
 
@@ -85,6 +87,9 @@ class InventoryView(
     """
     serializer_class = InventorySerializer
 
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = InventoryFilter
+
     def get_queryset(self):
         return Inventory.objects.filter(user=self.request.user)
 
@@ -102,6 +107,8 @@ class OfferView(
         'list': OfferSerializer,
         'create': CreateOfferSerializer
     }
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = OfferFilter
 
     def get_queryset(self):
         return Offer.objects.filter(is_active=True)
@@ -118,6 +125,8 @@ class TradeView(
     Trade View
     """
     serializer_class = TradeSerializer
+    filter_backends = (filters.DjangoFilterBackend, )
+    filterset_class = TradeFilter
 
     def get_queryset(self):
         return Trade.objects.filter(Q(buyer=self.request.user) | Q(seller=self.request.user))
