@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'trading_app'
+    'trading_app',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
