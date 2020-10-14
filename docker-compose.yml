@@ -12,8 +12,6 @@ services:
       - .:/code
     links:
       - db:db
-    ports:
-      - 8000:8000
     depends_on:
       - db
     env_file:
@@ -32,6 +30,14 @@ services:
       - web-variables.env
     depends_on:
       - redis
+      - web
+  nginx:
+    image: nginx
+    ports:
+      - 8000:80
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
       - web
 volumes:
   postgres_data:
