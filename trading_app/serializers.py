@@ -5,7 +5,8 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
 from trading_app.models import Currency, Item, WatchList, Inventory, Offer, Trade
-from trading_app.service import TransactionTypeEnum
+from trading_app.enums import TransactionTypeEnum
+
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -129,11 +130,13 @@ class CreateOfferSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+
         user = self.context['request'].user
+
         if validated_data['transaction_type'] == TransactionTypeEnum.sale.value:
             try:
-                item = user.inventory.get(item=validated_data['item'])
-                if item.quantity - item.reserved_quantity < validated_data['entry_quantity']:
+                item = user.inventory.get(item=validated_data.get('item'))
+                if item.quantity - item.reserved_quantity < validated_data.get('entry_quantity'):
                     raise serializers.ValidationError(
                         "You don't have enough not reserved items of that type in your inventory"
                     )
@@ -141,10 +144,12 @@ class CreateOfferSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     "You don't have items of that type in your inventory"
                 )
-            item.reserved_quantity += validated_data['entry_quantity']
+            item.reserved_quantity += validated_data.get('entry_quantity')
             item.save()
+
         validated_data['user'] = user
         validated_data['quantity'] = validated_data['entry_quantity']
+
         offer = Offer(**validated_data)
         offer.save()
         return offer

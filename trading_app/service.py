@@ -1,18 +1,14 @@
-import enum
 from django.shortcuts import get_object_or_404
 from trading_app.models import Trade, Offer, Inventory
 
 
-class TransactionTypeEnum(enum.IntEnum):
-    purchase = 1
-    sale = 2
-
-
 def make_trade(buyer_offer: Offer, seller_offer: Offer):
+
     if buyer_offer.quantity > seller_offer.quantity:
         quantity = seller_offer.quantity
     else:
         quantity = buyer_offer.quantity
+
     Trade.objects.create(
         item=buyer_offer.item,
         seller=seller_offer.user,
@@ -23,14 +19,17 @@ def make_trade(buyer_offer: Offer, seller_offer: Offer):
         seller_offer=seller_offer,
         buyer_offer=buyer_offer,
     )
+
     buyer_offer.quantity -= quantity
     if buyer_offer.quantity == 0:
         buyer_offer.is_active = False
     buyer_offer.save(update_fields=('is_active', 'quantity'))
+
     seller_offer.quantity -= quantity
     if seller_offer.quantity == 0:
         seller_offer.is_active = False
     seller_offer.save(update_fields=('is_active', 'quantity'))
+
     buyer_inventory, _ = buyer_offer.user.inventory.get_or_create(
         item=buyer_offer.item,
         defaults={
@@ -41,6 +40,7 @@ def make_trade(buyer_offer: Offer, seller_offer: Offer):
     )
     buyer_inventory.quantity += quantity
     buyer_inventory.save(update_fields=('quantity', ))
+
     seller_inventory = get_object_or_404(Inventory, item=seller_offer.item, user=seller_offer.user)
     seller_inventory.quantity -= quantity
     seller_inventory.reserved_quantity -= quantity
