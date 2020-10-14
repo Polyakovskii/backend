@@ -13,7 +13,7 @@ from trading_app.serializers import (
     CreateOfferSerializer,
     TradeSerializer
 )
-from trading_app.permissions import IsOwner
+from trading_app.permissions import IsOwnerOrAuthenticatedReadOnly
 from trading_app.models import Currency, WatchList, Inventory, Offer, Trade
 # Create your views here.
 
@@ -37,15 +37,10 @@ class UserView(
         "update": UpdateUserSerializer,
     }
 
+    permission_classes = [IsOwnerOrAuthenticatedReadOnly]
+
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
-
-    def get_permissions(self, ):
-        if self.action == 'create':
-            return [permissions.AllowAny()]
-        if self.action == 'update':
-            return [IsOwner()]
-        return [permissions.IsAuthenticated()]
 
 
 class CurrencyView(viewsets.GenericViewSet, viewsets.mixins.ListModelMixin):

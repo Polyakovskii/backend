@@ -10,6 +10,7 @@ services:
     build: .
     volumes:
       - .:/code
+      - static_volume:/opt/services/djangoapp/static
     links:
       - db:db
     depends_on:
@@ -37,7 +38,9 @@ services:
       - 8000:80
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/opt/services/djangoapp/static
     depends_on:
       - web
 volumes:
   postgres_data:
+  static_volume:
