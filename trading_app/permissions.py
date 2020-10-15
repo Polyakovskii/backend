@@ -9,7 +9,7 @@ class IsOwnerOrAuthenticatedReadOnly(permissions.BasePermission):
     Special permission class for updating User model
     """
     def has_permission(self, request, view):
-        if request.method == "POST":
+        if request.method == 'POST':
             return True
         return request.user.is_authenticated
 

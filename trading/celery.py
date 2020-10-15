@@ -1,5 +1,7 @@
 import os, sys
+
 from celery import Celery
+
 import trading.settings
 
 sys.path.append(os.path.abspath('trading'))

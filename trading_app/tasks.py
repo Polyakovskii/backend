@@ -1,4 +1,5 @@
 from celery import shared_task
+
 from trading_app.models import Offer
 from trading_app.service import make_trade
 from trading_app.enums import TransactionTypeEnum

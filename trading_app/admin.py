@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from trading_app.models import Item, WatchList, Currency, Inventory, Offer, Trade
 # Register your models here.
 

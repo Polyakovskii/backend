@@ -2,8 +2,10 @@
 All main Serializers
 """
 from rest_framework import serializers
+
 from django.contrib.auth.models import User
 from django.db.models import ObjectDoesNotExist
+
 from trading_app.models import Currency, Item, WatchList, Inventory, Offer, Trade
 from trading_app.enums import TransactionTypeEnum
 
@@ -50,7 +52,7 @@ class CurrencySerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Currency
-        fields = "__all__"
+        fields = '__all__'
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -61,7 +63,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = "__all__"
+        fields = '__all__'
 
 
 class WatchListSerializer(serializers.ModelSerializer):
@@ -72,7 +74,7 @@ class WatchListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WatchList
-        fields = "__all__"
+        fields = '__all__'
         extra_kwargs = {'user': {'read_only': True}}
 
 
@@ -82,7 +84,7 @@ class CreateWatchListSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = WatchList
-        fields = "__all__"
+        fields = '__all__'
         extra_kwargs = {'user': {'read_only': True}}
 
     def create(self, validated_data):
@@ -100,7 +102,7 @@ class InventorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Inventory
-        fields = "__all__"
+        fields = '__all__'
 
 
 class OfferSerializer(serializers.ModelSerializer):
@@ -112,7 +114,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = "__all__"
+        fields = '__all__'
 
 
 class CreateOfferSerializer(serializers.ModelSerializer):
@@ -126,7 +128,7 @@ class CreateOfferSerializer(serializers.ModelSerializer):
     @staticmethod
     def validate(attrs):
         if attrs['entry_quantity'] <= 0:
-            raise serializers.ValidationError("Quantity should be positive number")
+            raise serializers.ValidationError('Quantity should be positive numbe')
         return attrs
 
     def create(self, validated_data):

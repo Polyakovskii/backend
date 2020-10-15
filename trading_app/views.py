@@ -1,7 +1,12 @@
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import action
+
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Sum
+
 from django_filters import rest_framework as filters
+
 from trading_app.serializers import (
     UserSerializer,
     ListUserSerializer,
@@ -39,7 +44,7 @@ class UserView(
         "update": UpdateUserSerializer,
     }
 
-    permission_classes = [IsOwnerOrAuthenticatedReadOnly]
+    permission_classes = (IsOwnerOrAuthenticatedReadOnly, )
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)
@@ -70,6 +75,17 @@ class WatchListView(
         'create': CreateWatchListSerializer
     }
     lookup_field = "item"
+
+    @action(methods=['get'], detail=False)
+    def get_total_price_of_watchlist(self, request):
+        price = WatchList.objects.filter(
+            user=request.user,
+            item__actual_price__lte=100
+        ).aggregate(Sum('item__actual_price'))
+        return Response(data={
+            'message': 'Total price of items in watch list with actual price lover then 100',
+            'price': price}
+        )
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer_class)

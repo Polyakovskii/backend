@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", default='5k%13$n=q#ouzu%-ck*4os(v#rj(bft1_$hb0fg_+y@vc!)**8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'trading.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('NAME'),
-        'USER': os.getenv('USER'),
-        'PASSWORD': os.getenv('PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT'),
+        'NAME': os.getenv('NAME', default='postgres'),
+        'USER': 'postgres',#os.getenv('USER', default='postgres'),
+        'PASSWORD': 'postgres',#os.getenv('PASSWORD', default='postgres'),
+        'HOST': os.getenv('HOST', default='127.0.0.1'),
+        'PORT': os.getenv('PORT', default=5432),
     }
 }
 

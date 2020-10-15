@@ -1,4 +1,5 @@
 from rest_framework.routers import SimpleRouter
+
 from trading_app.views import UserView, CurrencyView, WatchListView, InventoryView, OfferView, TradeView
 
 router = SimpleRouter()

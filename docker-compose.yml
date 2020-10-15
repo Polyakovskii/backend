@@ -2,28 +2,26 @@ version: '3.7'
 services:
   db:
     image: postgres
-    container_name: db
     env_file:
       - web-variables.env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
   web:
-    restart: on-failure
     build: .
     volumes:
       - .:/code
       - static_volume:/opt/services/djangoapp/static
-    links:
-      - db:db
     depends_on:
       - db
     env_file:
      - web-variables.env
-    entrypoint: ["./docker-entrypoint.sh"]
   redis:
     image: redis
     ports:
       - 6379:6379
     command: redis-server
-    container_name: 'redis'
+    volumes:
+    - .trading-redis:/data
   celery:
     build: .
     command: celery -A trading worker -B
@@ -42,5 +40,4 @@ services:
     depends_on:
       - web
 volumes:
-  postgres_data:
   static_volume:

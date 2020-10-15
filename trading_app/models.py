@@ -1,17 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
+from trading_app.enums import TransactionTypeEnum, OrderTypeEnum
 # Create your models here.
-TransactionType = {
-    1: "purchase",
-    2: "sale"
-}
-OrderType = {
-    1: "market",
-    2: "limit",
-    3: "stop-loss"
-}
 
 
 class Currency(models.Model):
@@ -39,6 +30,8 @@ class Item(models.Model):
 
     details = models.TextField(blank=True, null=True)
 
+    demanded = models.BooleanField(default=False)
+
     def __str__(self):
         return self.name
 
@@ -53,7 +46,7 @@ class WatchList(models.Model):
         unique_together = ('user', 'item')
 
     def __str__(self):
-        return f"{self.user}'s {self.item}"
+        return f'WatchList. User: {self.user}, Item:{self.item}'
 
 
 class Price(models.Model):
@@ -71,20 +64,20 @@ class Offer(models.Model):
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
-    item = models.ForeignKey(Item, blank=True, null=True, on_delete=models.SET_NULL)
+    item = models.ForeignKey(Item, blank=True, null=True, on_delete=models.SET_NULL, related_name='offer')
 
     entry_quantity = models.IntegerField()
     quantity = models.IntegerField()
 
-    order_type = models.PositiveSmallIntegerField(choices=OrderType.items())
-    transaction_type = models.PositiveSmallIntegerField(choices=TransactionType.items())
+    order_type = models.PositiveSmallIntegerField(choices=OrderTypeEnum.choices())
+    transaction_type = models.PositiveSmallIntegerField(choices=TransactionTypeEnum.choices())
 
     price = models.DecimalField(max_digits=7, decimal_places=2, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"Offer. User: {self.user} Item: {self.item}"
+        return f'Offer. User: {self.user} Item: {self.item}'
 
 
 class Trade(models.Model):
@@ -110,7 +103,7 @@ class Trade(models.Model):
     quantity = models.IntegerField()
     unit_price = models.DecimalField(max_digits=7, decimal_places=2)
 
-    trade_type = models.PositiveSmallIntegerField(choices=OrderType.items())
+    trade_type = models.PositiveSmallIntegerField(choices=OrderTypeEnum.choices())
 
     description = models.TextField(blank=True, null=True)
 
@@ -132,7 +125,7 @@ class Trade(models.Model):
     )
 
     def __str__(self):
-        return f"Trade. Buyer:{self.buyer}, seller: {self.seller}, item: {self.item}"
+        return f'Trade. Buyer:{self.buyer}, seller: {self.seller}, item: {self.item}'
 
 
 class Inventory(models.Model):
