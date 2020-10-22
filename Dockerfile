@@ -1,5 +1,7 @@
 FROM python:3.8.2
-WORKDIR /code
+
+WORKDIR /code/
+RUN mkdir /code/staticfiles
 
 # Install dependencies
 RUN pip install pipenv

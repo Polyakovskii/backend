@@ -9,8 +9,8 @@ services:
   web:
     build: .
     volumes:
-      - .:/code
-      - static_volume:/opt/services/djangoapp/static
+      - .:/opt/services/djangoapp/src
+      - static_volume:/code/staticfiles
     depends_on:
       - db
     env_file:
@@ -36,7 +36,7 @@ services:
       - 8000:80
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
-      - static_volume:/opt/services/djangoapp/static
+      - static_volume:/code/staticfiles
     depends_on:
       - web
 volumes:
