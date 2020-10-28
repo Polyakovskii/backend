@@ -17,10 +17,11 @@ from trading_app.serializers import (
     InventorySerializer,
     OfferSerializer,
     CreateOfferSerializer,
-    TradeSerializer
+    TradeSerializer,
+    ItemSerializer
 )
 from trading_app.permissions import IsOwnerOrAuthenticatedReadOnly
-from trading_app.models import Currency, WatchList, Inventory, Offer, Trade
+from trading_app.models import Currency, WatchList, Inventory, Offer, Trade, Item
 from trading_app.filters import OfferFilter, TradeFilter, InventoryFilter
 # Create your views here.
 
@@ -146,3 +147,14 @@ class TradeView(
 
     def get_queryset(self):
         return Trade.objects.filter(Q(buyer=self.request.user) | Q(seller=self.request.user))
+
+
+class ItemView(
+    viewsets.GenericViewSet,
+    viewsets.mixins.ListModelMixin
+):
+    '''
+    All existing items view
+    '''
+    serializer_class = ItemSerializer
+    queryset = Item.objects.all()
