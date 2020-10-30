@@ -83,8 +83,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('NAME', default='postgres'),
-        'USER': 'postgres',#os.getenv('USER', default='postgres'),
-        'PASSWORD': 'postgres',#os.getenv('PASSWORD', default='postgres'),
+        'USER': os.getenv('USER', default='postgres'),
+        'PASSWORD': os.getenv('PASSWORD', default='postgres'),
         'HOST': os.getenv('HOST', default='127.0.0.1'),
         'PORT': os.getenv('PORT', default=5432),
     }
@@ -128,7 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
